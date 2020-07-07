@@ -18,14 +18,23 @@ namespace AOC2019.Tests
                 this.day = day;
             }
 
-            private IEnumerable<string> asLines() =>
+            internal string readAllText() =>
+                File.ReadAllText($"{INPUT_PATH}/day{day:00}.txt");
+            
+            private IEnumerable<string> readAllLines() =>
                 File.ReadAllLines($"{INPUT_PATH}/day{day:00}.txt");
 
-            internal List<string> asList() => 
-                asLines().ToList();
+            internal List<string> linesOfStrings() => 
+                readAllLines().ToList();
 
-            internal List<int> asListOfInts() =>
-                asList().ConvertAll(int.Parse);
+            internal List<int> linesOfIntegers() =>
+                linesOfStrings().ConvertAll(int.Parse);
+
+            internal List<string> commaSeparatedStrings() =>
+                readAllText().Split(',').ToList();
+
+            internal List<int> commaSeparatedIntegers() =>
+                commaSeparatedStrings().ConvertAll(int.Parse);
         }
 
         protected TestBase(int day)

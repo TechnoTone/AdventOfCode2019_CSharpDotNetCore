@@ -14,6 +14,5 @@
             var x = fuelFor(mass);
             return x > 0 ? x + correctFuelFor(x) : 0;
         }
-        
     }
 }

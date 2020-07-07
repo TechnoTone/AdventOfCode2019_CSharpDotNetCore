@@ -96,7 +96,7 @@ namespace AOC2019.Tests
 
         public Day01Tests() : base(1)
         {
-            moduleMasses = input.asListOfInts();
+            moduleMasses = input.linesOfIntegers();
         }
 
         [Test]
