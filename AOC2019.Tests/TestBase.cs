@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -35,6 +36,12 @@ namespace AOC2019.Tests
 
             internal List<int> commaSeparatedIntegers() =>
                 commaSeparatedStrings().ConvertAll(int.Parse);
+
+            internal Tuple<int, int> range()
+            {
+                var ns = readAllText().Split('-').ToList().ConvertAll(int.Parse);
+                return new Tuple<int, int>(ns[0], ns[1]);
+            }
         }
 
         protected TestBase(int day)

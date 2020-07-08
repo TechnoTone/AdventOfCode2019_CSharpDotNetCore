@@ -62,6 +62,5 @@ namespace AOC2019
         
         public static WireSegment parse(string s) =>
             new WireSegment(s[0], int.Parse(s.Substring(1)));
-
     }
 }
