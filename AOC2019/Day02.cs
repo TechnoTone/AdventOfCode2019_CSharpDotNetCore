@@ -5,7 +5,7 @@ namespace AOC2019
 {
     public class Day02
     {
-        private List<int> program;
+        private readonly List<int> program;
 
         public Day02(List<int> program)
         {

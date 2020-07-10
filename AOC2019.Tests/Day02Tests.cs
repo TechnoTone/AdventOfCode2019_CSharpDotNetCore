@@ -168,22 +168,6 @@ namespace AOC2019.Tests
         }
 
         [Test]
-        [TestCase("1,0,0,0,99", "2,0,0,0,99")]
-        [TestCase("2,3,0,3,99", "2,3,0,6,99")]
-        [TestCase("2,4,4,5,99,0", "2,4,4,5,99,9801")]
-        [TestCase("1,1,1,4,99,5,6,0,99", "30,1,1,4,2,5,6,0,99")]
-        [TestCase(
-            "1,9,10,3,2,3,11,0,99,30,40,50",
-            "3500,9,10,70,2,3,11,0,99,30,40,50")]
-        public void Part1Examples(string program, string output)
-        {
-            var computer = new OpComputer(program);
-            computer.Run();
-
-            computer.readMemory().Should().Be(output);
-        }
-
-        [Test]
         public void Part1()
         {
             var program = input.commaSeparatedIntegers();
