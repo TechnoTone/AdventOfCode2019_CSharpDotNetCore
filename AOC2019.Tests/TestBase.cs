@@ -44,9 +44,6 @@ namespace AOC2019.Tests
             }
         }
 
-        protected TestBase(int day)
-        {
-            input = new InputReader(day);
-        }
+        protected TestBase(int day) => input = new InputReader(day);
     }
 }
