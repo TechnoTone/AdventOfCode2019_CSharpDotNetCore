@@ -9,9 +9,6 @@ namespace AOC2019
         private readonly List<int> memory;
         private int pos;
         private readonly Queue<int> inputQueue = new Queue<int>();
-        private readonly Queue<int> outputQueue = new Queue<int>();
-
-        public bool Halted { get; private set; }
 
         public string ReadMemory() => memory.JoinToString();
         public int ReadMemoryPosition(int pos) => memory[pos];
@@ -28,21 +25,19 @@ namespace AOC2019
             OpIsEqualTo = 8,
             OpHalt = 99
         }
-        
-        
 
         public enum ParameterMode
         {
             Position = 0,
             Immediate = 1
         }
-        
+
         public struct Operation
         {
             public readonly OpCodes opCode;
             public readonly ParameterMode[] parameterModes;
             public int[] parameters;
-        
+
             public Operation(int value)
             {
                 opCode = (OpCodes) (value % 100);
@@ -64,6 +59,25 @@ namespace AOC2019
                 string.Format($"{opCode}({parameters.JoinToString()})");
         }
 
+        public enum Response
+        {
+            AwaitingInput,
+            Output,
+            Halt
+        }
+
+        public static class RespondWith
+        {
+            public static Tuple<Response, int> AwaitingInput() =>
+                new Tuple<Response, int>(Response.AwaitingInput, 0);
+
+            public static Tuple<Response, int> Output(int value) =>
+                new Tuple<Response, int>(Response.Output, value);
+
+            public static Tuple<Response, int> Halt() =>
+                new Tuple<Response, int>(Response.Halt, 0);
+        }
+
         public OpComputer(string program)
         {
             memory = program.ParseCommaSeparatedIntegers();
@@ -74,12 +88,38 @@ namespace AOC2019
             memory = program;
         }
 
-        public void Run()
+        public List<int> RunUntilHalt()
+        {
+            var outputs = new List<int>();
+            while (true)
+            {
+                switch (Run())
+                {
+                    case (Response.Halt, _):
+                        return outputs;
+
+                    case (Response.Output, int value):
+                        outputs.Add(value);
+                        break;
+
+                    case (Response.AwaitingInput, _):
+                        throw new NoInputException();
+                }
+            }
+        }
+
+        public List<int> RunUntilHalt(int input)
+        {
+            Input(input);
+            return RunUntilHalt();
+        }
+
+        public Tuple<Response, int> Run()
         {
             while (true)
             {
                 var op = readOp();
-                
+
                 // HelperFunctions.Log("Memory::" + memory.JoinToString());
                 // HelperFunctions.Log("Inputs::" + inputQueue.JoinToString());
                 // HelperFunctions.Log("Outputs:" + outputQueue.JoinToString());
@@ -99,18 +139,17 @@ namespace AOC2019
                         if (hasInput)
                             write(inputQueue.Dequeue(), op.parameters[0]);
                         else
-                            return;
+                            return RespondWith.AwaitingInput();
                         break;
 
                     case OpCodes.OpOutput:
-                        outputQueue.Enqueue(op.parameters[0]);
-                        return;
+                        return RespondWith.Output(op.parameters[0]);
 
                     case OpCodes.OpJumpIfTrue:
                         if (op.parameters[0] != 0)
                             jump(op.parameters[1]);
                         break;
-                    
+
                     case OpCodes.OpJumpIfFalse:
                         if (op.parameters[0] == 0)
                             jump(op.parameters[1]);
@@ -119,14 +158,13 @@ namespace AOC2019
                     case OpCodes.OpIsLessThan:
                         write(op.parameters[0] < op.parameters[1] ? 1 : 0, op.parameters[2]);
                         break;
-                    
+
                     case OpCodes.OpIsEqualTo:
                         write(op.parameters[0] == op.parameters[1] ? 1 : 0, op.parameters[2]);
                         break;
 
                     case OpCodes.OpHalt:
-                        Halted = true;
-                        return;
+                        return RespondWith.Halt();
 
                     default:
                         throw new UnknownOperationException(op.opCode);
@@ -135,17 +173,13 @@ namespace AOC2019
         }
 
         private bool hasInput => inputQueue.Count > 0;
-        
-        public void Input(int value) => inputQueue.Enqueue(value);
-        
-        public bool HasOutput => outputQueue.Count > 0;
 
-        public int ReadOutput() => outputQueue.Dequeue();
+        public void Input(int value) => inputQueue.Enqueue(value);
 
         private Operation readOp()
         {
             var operation = new Operation(read(ParameterMode.Immediate));
-            
+
             switch (operation.opCode)
             {
                 case OpCodes.OpAdd:
@@ -207,7 +241,7 @@ namespace AOC2019
         {
             if (newPos < 0 || newPos >= memory.Count)
                 throw new JumpAddressOutOfRange(newPos);
-            
+
             pos = newPos;
         }
     }
@@ -232,5 +266,9 @@ namespace AOC2019
         {
             Address = address;
         }
+    }
+
+    public class NoInputException : Exception
+    {
     }
 }

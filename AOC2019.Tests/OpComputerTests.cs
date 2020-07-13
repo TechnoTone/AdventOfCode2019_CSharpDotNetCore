@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using FluentAssertions;
 using NUnit.Framework;
 using static AOC2019.OpComputer;
 using static AOC2019.OpComputer.OpCodes;
@@ -71,19 +72,21 @@ namespace AOC2019.Tests
         [TestCase(
             "3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99", 
             9, 1001, null)]
-        public void ProgramTests(string program, int? programInput, int? programOutput, string programMemory)
+        public void ProgramTests(string program, int? programInput, int? expectedOutput, string programMemory)
         {
             var computer = new OpComputer(program);
 
             if (programInput.HasValue)
                 computer.Input(programInput.Value);
 
-            computer.Run();
+            
+            var programResult = computer.RunUntilHalt();
 
-            computer.HasOutput.Should().Be(programOutput.HasValue);
-
-            if (programOutput.HasValue)
-                computer.ReadOutput().Should().Be(programOutput.Value);
+            if (expectedOutput.HasValue)
+            {
+                programResult.Count.Should().Be(1);
+                programResult[0].Should().Be(expectedOutput.Value);
+            }
 
             if (!string.IsNullOrEmpty(programMemory))
                 computer.ReadMemory().Should().Be(programMemory);

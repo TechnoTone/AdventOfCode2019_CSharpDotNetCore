@@ -20,8 +20,11 @@ namespace AOC2019
             phases.ToList().ConvertAll(ToAmplifier).ForEach(amp =>
             {
                 amp.Input(output);
-                amp.Run();
-                output = amp.ReadOutput();
+                output = amp.Run() switch
+                {
+                    (OpComputer.Response.Output, int value) => value,
+                    _ => output
+                };
             });
                 
             return output;
@@ -60,13 +63,15 @@ namespace AOC2019
                 foreach (var amp in amps)
                 {
                     amp.Input(output);
-                    amp.Run();
-                    if (amp.HasOutput)
-                        output = amp.ReadOutput();
+                    switch (amp.Run())
+                    {
+                        case (OpComputer.Response.Output, int value):
+                            output = value;
+                            break;
+                        case (OpComputer.Response.Halt, _):
+                            return output;
+                    }
                 }
-
-                if (amps[4].Halted)
-                    return output;
             }
         }
 

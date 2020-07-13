@@ -215,7 +215,7 @@ namespace AOC2019.Tests
         [Test]
         public void Part1()
         {
-            var results = Day05.runTestProgram(input.commaSeparatedIntegers(), 1);
+            var results = new OpComputer(input.commaSeparatedIntegers()).RunUntilHalt(1);
             
             results.Count.Should().Be(10);
             results.Take(9).Should().AllBeEquivalentTo(0);
@@ -225,7 +225,7 @@ namespace AOC2019.Tests
         [Test]
         public void Part2()
         {
-            var results = Day05.runTestProgram(input.commaSeparatedIntegers(), 5);
+            var results = new OpComputer(input.commaSeparatedIntegers()).RunUntilHalt(5);
 
             results.Count.Should().Be(1);
             results[0].Should().Be(2808771);
