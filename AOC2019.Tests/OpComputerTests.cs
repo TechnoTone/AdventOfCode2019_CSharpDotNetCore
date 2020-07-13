@@ -76,17 +76,17 @@ namespace AOC2019.Tests
             var computer = new OpComputer(program);
 
             if (programInput.HasValue)
-                computer.input(programInput.Value);
+                computer.Input(programInput.Value);
 
             computer.Run();
 
-            computer.hasOutput.Should().Be(programOutput.HasValue);
+            computer.HasOutput.Should().Be(programOutput.HasValue);
 
             if (programOutput.HasValue)
-                computer.readOutput().Should().Be(programOutput.Value);
+                computer.ReadOutput().Should().Be(programOutput.Value);
 
             if (!string.IsNullOrEmpty(programMemory))
-                computer.readMemory().Should().Be(programMemory);
+                computer.ReadMemory().Should().Be(programMemory);
         }
     }
 }

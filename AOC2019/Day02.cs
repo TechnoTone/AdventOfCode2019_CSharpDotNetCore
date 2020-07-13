@@ -39,7 +39,7 @@ namespace AOC2019
             temp[2] = v;
             var computer = new OpComputer(temp);
             computer.Run();
-            var result = computer.readMemoryPosition(0);
+            var result = computer.ReadMemoryPosition(0);
             return result;
         }
 

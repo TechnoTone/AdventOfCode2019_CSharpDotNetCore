@@ -176,7 +176,7 @@ namespace AOC2019.Tests
 
             var computer = new OpComputer(program);
             computer.Run();
-            computer.readMemoryPosition(0).Should().Be(9706670);
+            computer.ReadMemoryPosition(0).Should().Be(9706670);
         }
 
         [Test]

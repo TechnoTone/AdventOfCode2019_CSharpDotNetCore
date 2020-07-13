@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace AOC2019
 {
@@ -7,12 +8,16 @@ namespace AOC2019
         public static List<int> runTestProgram(List<int> program, int systemID)
         {
             var computer = new OpComputer(program);
-            computer.input(systemID);
-            computer.Run();
+            computer.Input(systemID);
 
             var outputs = new List<int>();
-            while (computer.hasOutput)
-                outputs.Add(computer.readOutput());
+
+            while (!computer.Halted)
+            {
+                computer.Run();
+                while (computer.HasOutput)
+                    outputs.Add(computer.ReadOutput());
+            }
 
             return outputs;
         }

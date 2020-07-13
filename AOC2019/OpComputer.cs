@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using static System.String;
 
 namespace AOC2019
 {
     public class OpComputer
     {
         private readonly List<int> memory;
-        private int pos = 0;
+        private int pos;
         private readonly Queue<int> inputQueue = new Queue<int>();
         private readonly Queue<int> outputQueue = new Queue<int>();
 
-        public string readMemory() => Join(',', memory);
-        public int readMemoryPosition(int pos) => memory[pos];
+        public bool Halted { get; private set; }
+
+        public string ReadMemory() => memory.JoinToString();
+        public int ReadMemoryPosition(int pos) => memory[pos];
 
         public enum OpCodes
         {
@@ -60,17 +60,13 @@ namespace AOC2019
                         .ToArray();
             }
 
-            public override string ToString() => 
-                Format($"{opCode}({Join(',', parameters)})");
+            public override string ToString() =>
+                string.Format($"{opCode}({parameters.JoinToString()})");
         }
 
         public OpComputer(string program)
         {
-            memory =
-                program
-                    .Split(",")
-                    .ToList()
-                    .ConvertAll(int.Parse);
+            memory = program.ParseCommaSeparatedIntegers();
         }
 
         public OpComputer(List<int> program)
@@ -84,9 +80,9 @@ namespace AOC2019
             {
                 var op = readOp();
                 
-                // HelperFunctions.Log("Memory::" + Join(',', memory));
-                // HelperFunctions.Log("Inputs::" + Join(',', inputQueue));
-                // HelperFunctions.Log("Outputs:" + Join(',', outputQueue));
+                // HelperFunctions.Log("Memory::" + memory.JoinToString());
+                // HelperFunctions.Log("Inputs::" + inputQueue.JoinToString());
+                // HelperFunctions.Log("Outputs:" + outputQueue.JoinToString());
                 // HelperFunctions.Log($"{pos}:{op.ToString()}");
 
                 switch (op.opCode)
@@ -103,12 +99,12 @@ namespace AOC2019
                         if (hasInput)
                             write(inputQueue.Dequeue(), op.parameters[0]);
                         else
-                            throw new EmptyInputQueueException();
+                            return;
                         break;
 
                     case OpCodes.OpOutput:
                         outputQueue.Enqueue(op.parameters[0]);
-                        break;
+                        return;
 
                     case OpCodes.OpJumpIfTrue:
                         if (op.parameters[0] != 0)
@@ -129,6 +125,7 @@ namespace AOC2019
                         break;
 
                     case OpCodes.OpHalt:
+                        Halted = true;
                         return;
 
                     default:
@@ -139,11 +136,11 @@ namespace AOC2019
 
         private bool hasInput => inputQueue.Count > 0;
         
-        public void input(int value) => inputQueue.Enqueue(value);
+        public void Input(int value) => inputQueue.Enqueue(value);
         
-        public bool hasOutput => outputQueue.Count > 0;
+        public bool HasOutput => outputQueue.Count > 0;
 
-        public int readOutput() => outputQueue.Dequeue();
+        public int ReadOutput() => outputQueue.Dequeue();
 
         private Operation readOp()
         {
@@ -224,10 +221,6 @@ namespace AOC2019
         {
             OpCode = opCode;
         }
-    }
-
-    public class EmptyInputQueueException : Exception
-    {
     }
 
     public class JumpAddressOutOfRange : Exception
