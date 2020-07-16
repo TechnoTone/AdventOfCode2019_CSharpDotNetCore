@@ -26,5 +26,10 @@ namespace AOC2019
 
         public static string JoinToString (this IEnumerable<int> sequence) => 
             string.Join(',', sequence);
+
+        public static IEnumerable<string> Chunk(this string input, int chunkSize) =>
+            Enumerable.Range(0, input.Length / chunkSize)
+                .Select(i => input.Substring(i * chunkSize, chunkSize));
+
     }
 }
