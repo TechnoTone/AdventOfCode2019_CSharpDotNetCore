@@ -5,9 +5,9 @@ namespace AOC2019
 {
     public class Day02
     {
-        private readonly List<int> program;
+        private readonly List<long> program;
 
-        public Day02(List<int> program)
+        public Day02(List<long> program)
         {
             this.program = program;
         }
@@ -32,7 +32,7 @@ namespace AOC2019
             return 0;
         }
 
-        private int runProgramWith(int n, int v)
+        private long runProgramWith(long n, long v)
         {
             var temp = program.ToList();
             temp[1] = n;

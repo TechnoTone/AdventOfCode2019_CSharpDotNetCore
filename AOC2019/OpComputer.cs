@@ -6,12 +6,13 @@ namespace AOC2019
 {
     public class OpComputer
     {
-        private readonly List<int> memory;
+        private readonly List<long> memory;
         private int pos;
-        private readonly Queue<int> inputQueue = new Queue<int>();
+        private int relativeBase;
+        private readonly Queue<long> inputQueue = new Queue<long>();
 
         public string ReadMemory() => memory.JoinToString();
-        public int ReadMemoryPosition(int pos) => memory[pos];
+        public long ReadMemoryPosition(int pos) => memory[pos];
 
         public enum OpCodes
         {
@@ -23,25 +24,27 @@ namespace AOC2019
             OpJumpIfFalse = 6,
             OpIsLessThan = 7,
             OpIsEqualTo = 8,
+            OpAdjustRelativeBase = 9,
             OpHalt = 99
         }
 
         public enum ParameterMode
         {
             Position = 0,
-            Immediate = 1
+            Immediate = 1,
+            Relative = 2
         }
 
         public struct Operation
         {
             public readonly OpCodes opCode;
             public readonly ParameterMode[] parameterModes;
-            public int[] parameters;
+            public long[] parameters;
 
-            public Operation(int value)
+            public Operation(long value)
             {
                 opCode = (OpCodes) (value % 100);
-                parameters = Array.Empty<int>();
+                parameters = Array.Empty<long>();
 
                 if (!Enum.IsDefined(typeof(OpCodes), opCode))
                     throw new UnknownOperationException(opCode);
@@ -68,14 +71,14 @@ namespace AOC2019
 
         public static class RespondWith
         {
-            public static Tuple<Response, int> AwaitingInput() =>
-                new Tuple<Response, int>(Response.AwaitingInput, 0);
+            public static Tuple<Response, long> AwaitingInput() =>
+                new Tuple<Response, long>(Response.AwaitingInput, 0);
 
-            public static Tuple<Response, int> Output(int value) =>
-                new Tuple<Response, int>(Response.Output, value);
+            public static Tuple<Response, long> Output(long value) =>
+                new Tuple<Response, long>(Response.Output, value);
 
-            public static Tuple<Response, int> Halt() =>
-                new Tuple<Response, int>(Response.Halt, 0);
+            public static Tuple<Response, long> Halt() =>
+                new Tuple<Response, long>(Response.Halt, 0);
         }
 
         public OpComputer(string program)
@@ -83,14 +86,14 @@ namespace AOC2019
             memory = program.ParseCommaSeparatedIntegers();
         }
 
-        public OpComputer(List<int> program)
+        public OpComputer(List<long> program)
         {
             memory = program;
         }
 
-        public List<int> RunUntilHalt()
+        public List<long> RunUntilHalt()
         {
-            var outputs = new List<int>();
+            var outputs = new List<long>();
             while (true)
             {
                 switch (Run())
@@ -98,7 +101,7 @@ namespace AOC2019
                     case (Response.Halt, _):
                         return outputs;
 
-                    case (Response.Output, int value):
+                    case (Response.Output, long value):
                         outputs.Add(value);
                         break;
 
@@ -108,22 +111,21 @@ namespace AOC2019
             }
         }
 
-        public List<int> RunUntilHalt(int input)
+        public List<long> RunUntilHalt(long input)
         {
             Input(input);
             return RunUntilHalt();
         }
 
-        public Tuple<Response, int> Run()
+        public Tuple<Response, long> Run()
         {
             while (true)
             {
                 var op = readOp();
 
-                // HelperFunctions.Log("Memory::" + memory.JoinToString());
-                // HelperFunctions.Log("Inputs::" + inputQueue.JoinToString());
-                // HelperFunctions.Log("Outputs:" + outputQueue.JoinToString());
-                // HelperFunctions.Log($"{pos}:{op.ToString()}");
+                HelperFunctions.Log("Memory::" + memory.JoinToString());
+                HelperFunctions.Log("Inputs::" + inputQueue.JoinToString());
+                HelperFunctions.Log($"{pos}/{relativeBase}:{op.ToString()}");
 
                 switch (op.opCode)
                 {
@@ -163,6 +165,10 @@ namespace AOC2019
                         write(op.parameters[0] == op.parameters[1] ? 1 : 0, op.parameters[2]);
                         break;
 
+                    case OpCodes.OpAdjustRelativeBase:
+                        adjustRelativeBase(op.parameters[0]);
+                        break;
+
                     case OpCodes.OpHalt:
                         return RespondWith.Halt();
 
@@ -174,7 +180,8 @@ namespace AOC2019
 
         private bool hasInput => inputQueue.Count > 0;
 
-        public void Input(int value) => inputQueue.Enqueue(value);
+        public void Input(long value) => inputQueue.Enqueue(value);
+        public void Input(List<long> values) => values.ForEach(Input);
 
         private Operation readOp()
         {
@@ -213,37 +220,53 @@ namespace AOC2019
                         read(ParameterMode.Immediate)
                     };
                     break;
+                case OpCodes.OpAdjustRelativeBase:
+                    operation.parameters = new[]
+                    {
+                        read(ParameterMode.Immediate)
+                    };
+                    break;
                 case OpCodes.OpHalt:
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new UnknownOperationException(operation.opCode);
             }
 
             return operation;
         }
 
-        private int read(ParameterMode mode)
+        private long safeRead(long ix) => safeRead((int) ix);
+        private long safeRead(int ix) => ix < memory.Count ? memory[ix] : 0;
+
+        private long read(ParameterMode mode)
         {
-            switch (mode)
+            return mode switch
             {
-                case ParameterMode.Position:
-                    return memory[memory[pos++]];
-                case ParameterMode.Immediate:
-                    return memory[pos++];
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
-            }
+                ParameterMode.Position => safeRead(memory[pos++]),
+                ParameterMode.Immediate => safeRead(pos++),
+                ParameterMode.Relative => safeRead(relativeBase + memory[pos++]),
+                _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, null)
+            };
         }
 
-        private void write(int value, int address) => memory[address] = value;
+        private void write(long value, long address) => write(value, (int) address);
+        private void write(long value, int address)
+        {
+            if (memory.Count - 1 < address)
+                memory.AddRange(new long[address - memory.Count + 1 ]);
 
-        private void jump(int newPos)
+            memory[address] = value;
+        }
+
+        private void jump(long newPos)
         {
             if (newPos < 0 || newPos >= memory.Count)
                 throw new JumpAddressOutOfRange(newPos);
 
-            pos = newPos;
+            pos = (int) newPos;
         }
+
+        private void adjustRelativeBase(long offset) => relativeBase += (int)offset;
     }
 
     public class UnknownOperationException : Exception
@@ -259,9 +282,9 @@ namespace AOC2019
 
     public class JumpAddressOutOfRange : Exception
     {
-        public int Address { get; }
+        public long Address { get; }
 
-        public JumpAddressOutOfRange(int address) :
+        public JumpAddressOutOfRange(long address) :
             base($"Jump operation to invalid address ({address})")
         {
             Address = address;

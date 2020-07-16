@@ -34,8 +34,8 @@ namespace AOC2019.Tests
             internal List<string> commaSeparatedStrings() =>
                 readAllText().Split(',').ToList();
 
-            internal List<int> commaSeparatedIntegers() =>
-                commaSeparatedStrings().ConvertAll(int.Parse);
+            internal List<long> commaSeparatedIntegers() =>
+                commaSeparatedStrings().ConvertAll(long.Parse);
 
             internal Tuple<int, int> range()
             {

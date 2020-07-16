@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using static AOC2019.OpComputer;
@@ -18,6 +18,7 @@ namespace AOC2019.Tests
         [TestCase(6, OpJumpIfFalse, Position, Position, Position)]
         [TestCase(7, OpIsLessThan, Position, Position, Position)]
         [TestCase(8, OpIsEqualTo, Position, Position, Position)]
+        [TestCase(9, OpAdjustRelativeBase, Position, Position, Position )]
         [TestCase(99, OpHalt, Position, Position, Position)]
         [TestCase(101, OpAdd, Immediate, Position, Position)]
         [TestCase(10002, OpMultiply, Position, Position, Immediate)]
@@ -50,50 +51,52 @@ namespace AOC2019.Tests
         [TestCase("1,1,1,4,99,5,6,0,99", null, null, "30,1,1,4,2,5,6,0,99")]
 
         //Day05
-        [TestCase("3,0,4,0,99", 1, 1, null)]
+        [TestCase("3,0,4,0,99", "1", "1", null)]
         [TestCase("1002,4,3,4,33", null, null, "1002,4,3,4,99")]
         [TestCase("1101,100,-1,4,0", null, null, "1101,100,-1,4,99")]
-        [TestCase("3,9,8,9,10,9,4,9,99,-1,8", 7, 0, null)]
-        [TestCase("3,9,8,9,10,9,4,9,99,-1,8", 8, 1, null)]
-        [TestCase("3,9,7,9,10,9,4,9,99,-1,8", 7, 1, null)]
-        [TestCase("3,9,7,9,10,9,4,9,99,-1,8", 8, 0, null)]
-        [TestCase("3,3,1108,-1,8,3,4,3,99", 7, 0, null)]
-        [TestCase("3,3,1108,-1,8,3,4,3,99", 8, 1, null)]
-        [TestCase("3,3,1107,-1,8,3,4,3,99", 7, 1, null)]
-        [TestCase("3,3,1107,-1,8,3,4,3,99", 8, 0, null)]
-        [TestCase("3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9", 0, 0, null)]
-        [TestCase("3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9", 1, 1, null)]
-        [TestCase("3,3,1105,-1,9,1101,0,0,12,4,12,99,1", 0, 0, null)]
-        [TestCase("3,3,1105,-1,9,1101,0,0,12,4,12,99,1", 1, 1, null)]
+        [TestCase("3,9,8,9,10,9,4,9,99,-1,8", "7", "0", null)]
+        [TestCase("3,9,8,9,10,9,4,9,99,-1,8", "8", "1", null)]
+        [TestCase("3,9,7,9,10,9,4,9,99,-1,8", "7", "1", null)]
+        [TestCase("3,9,7,9,10,9,4,9,99,-1,8", "8", "0", null)]
+        [TestCase("3,3,1108,-1,8,3,4,3,99", "7", "0", null)]
+        [TestCase("3,3,1108,-1,8,3,4,3,99", "8", "1", null)]
+        [TestCase("3,3,1107,-1,8,3,4,3,99", "7", "1", null)]
+        [TestCase("3,3,1107,-1,8,3,4,3,99", "8", "0", null)]
+        [TestCase("3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9", "0", "0", null)]
+        [TestCase("3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9", "1", "1", null)]
+        [TestCase("3,3,1105,-1,9,1101,0,0,12,4,12,99,1", "0", "0", null)]
+        [TestCase("3,3,1105,-1,9,1101,0,0,12,4,12,99,1", "1", "1", null)]
         [TestCase(
             "3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99",
-            7, 999, null)]
+            "7", "999", null)]
         [TestCase(
             "3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99",
-            8, 1000, null)]
+            "8", "1000", null)]
         [TestCase(
             "3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99",
-            9, 1001, null)]
+            "9", "1001", null)]
 
         //Day09
+        [TestCase("109,2000,99", null, null, null)]
         [TestCase(
-            "109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99",
-            null, null,
-            "109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99")]
-        public void ProgramTests(string program, int? programInput, int? expectedOutput, string programMemory)
+            "109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99", null,
+            "109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99", null)]
+        [TestCase("1102,34915192,34915192,7,4,7,99,0", null, null, null)]
+        [TestCase("104,1125899906842624,99", null, "1125899906842624", null)]
+        public void ProgramTests(string program, string programInputs, string expectedOutputs, string programMemory)
         {
             var computer = new OpComputer(program);
 
-            if (programInput.HasValue)
-                computer.Input(programInput.Value);
-
+            if (!string.IsNullOrEmpty(programInputs))
+                computer.Input(programInputs.ParseCommaSeparatedIntegers());
 
             var programResult = computer.RunUntilHalt();
 
-            if (expectedOutput.HasValue)
+            if (!string.IsNullOrEmpty(expectedOutputs))
             {
-                programResult.Count.Should().Be(1);
-                programResult[0].Should().Be(expectedOutput.Value);
+                var expectedOutputsParsed = expectedOutputs.ParseCommaSeparatedIntegers();
+                programResult.Count.Should().Be(expectedOutputsParsed.Count);
+                programResult.Should().BeEquivalentTo(expectedOutputsParsed);
             }
 
             if (!string.IsNullOrEmpty(programMemory))

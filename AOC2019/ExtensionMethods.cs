@@ -1,13 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace AOC2019
 {
     public static class StringExtensions
     {
-        public static List<int> ParseCommaSeparatedIntegers(this string input) => 
-            input.Split(',').ToList().ConvertAll(int.Parse);
+        public static List<long> ParseCommaSeparatedIntegers(this string input) =>
+            input.Split(',').ToList().ConvertAll(long.Parse);
     }
 
     public static class EnumerableExtensions
@@ -24,7 +23,10 @@ namespace AOC2019
         public static IEnumerable<IEnumerable<T>> Permutations<T>(this IEnumerable<T> sequence) => 
             sequence.Permutations(sequence.Count());
 
-        public static string JoinToString (this IEnumerable<int> sequence) => 
+        public static string JoinToString (this IEnumerable<int> sequence) =>
+            string.Join(',', sequence);
+
+        public static string JoinToString (this IEnumerable<long> sequence) =>
             string.Join(',', sequence);
 
         public static IEnumerable<string> Chunk(this string input, int chunkSize) =>
