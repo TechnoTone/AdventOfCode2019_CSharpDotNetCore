@@ -176,7 +176,7 @@ namespace AOC2019.Tests
             "3,31,3,32,1002,32,10,32,1001,31,-2,31,1007,31,0,33,1002,33,7,33,1,33,31,31,1,32,31,31,4,31,99,0,0,0",
             "1,0,4,3,2",
             65210)]
-        public void Day07Examples_SinglePass(string program, string phases, int expected)
+        public void Examples_SinglePass(string program, string phases, int expected)
         {
             var (bestPhases, bestOutput) = Day07.BestPhaseOutput_SinglePass(program);
             bestPhases.JoinToString().Should().Be(phases);
@@ -192,7 +192,7 @@ namespace AOC2019.Tests
             "3,52,1001,52,-5,52,3,53,1,52,56,54,1007,54,5,55,1005,55,26,1001,54,-5,54,1105,1,12,1,53,54,53,1008,54,0,55,1001,55,1,55,2,53,55,53,4,53,1001,56,-1,56,1005,56,6,99,0,0,0,0,10",
             "9,7,8,5,6",
             18216)]
-        public void Day07Examples_Looped(string program, string phases, int expected)
+        public void Examples_Looped(string program, string phases, int expected)
         {
             var (bestPhases, bestOutput) = Day07.BestPhaseOutput_Looped(program);
             bestPhases.JoinToString().Should().Be(phases);
@@ -200,14 +200,14 @@ namespace AOC2019.Tests
         }
 
         [Test]
-        public void Day07Part1()
+        public void Part1()
         {
             var (_, output) = Day07.BestPhaseOutput_SinglePass(input.readAllText());
             output.Should().Be(199988);
         }
 
         [Test]
-        public void Day07Part2()
+        public void Part2()
         {
             var (_, output) = Day07.BestPhaseOutput_Looped(input.readAllText());
             output.Should().Be(17519904);

@@ -148,7 +148,7 @@ namespace AOC2019.Tests
         }
 
         [Test]
-        public void Day06Example1()
+        public void Example_OrbitCounts()
         {
             const string input = "COM)B\nB)C\nC)D\nD)E\nE)F\nB)G\nG)H\nD)I\nE)J\nJ)K\nK)L";
             var inputList = input.Split('\n').ToList();
@@ -159,14 +159,7 @@ namespace AOC2019.Tests
         }
 
         [Test]
-        public void Day06Part1()
-        {
-            var count = Day06.OrbitCounts(input.linesOfStrings());
-            count.Should().Be(273985);
-        }
-
-        [Test]
-        public void Day06Example2()
+        public void Example_Transfers()
         {
             const string input = "COM)B\nB)C\nC)D\nD)E\nE)F\nB)G\nG)H\nD)I\nE)J\nJ)K\nK)L\nK)YOU\nI)SAN";
             var inputList = input.Split('\n').ToList();
@@ -177,7 +170,14 @@ namespace AOC2019.Tests
         }
 
         [Test]
-        public void Day06Part2()
+        public void Part1()
+        {
+            var count = Day06.OrbitCounts(input.linesOfStrings());
+            count.Should().Be(273985);
+        }
+
+        [Test]
+        public void Part2()
         {
             var count = Day06.Transfers(input.linesOfStrings());
             count.Should().Be(460);

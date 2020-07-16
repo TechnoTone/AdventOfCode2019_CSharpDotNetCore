@@ -107,8 +107,7 @@ namespace AOC2019.Tests
         {
         }
 
-        [Test]
-        public void TestChecksum()
+        [Test] public void Example_Checksum()
         {
             const string imageData = "123456789012";
             const int width = 3;
@@ -120,13 +119,13 @@ namespace AOC2019.Tests
         [Test]
         [TestCase("123456789012", 6, new[] {"123456", "789012"})]
         [TestCase("0222112222120000", 4, new[] {"0222", "1122", "2212", "0000"})]
-        public void TestGetImageLayers(string imageData, int size, string[] imageLayers)
+        public void Examples_GetImageLayers(string imageData, int size, string[] imageLayers)
         {
             Day08.ImageLayers(imageData, size).Should().BeEquivalentTo(imageLayers);
         }
 
         [Test]
-        public void TestRenderer() => Day08.RenderImage("0222112222120000", 4).Should().Be("0110");
+        public void Example_Renderer() => Day08.RenderImage("0222112222120000", 4).Should().Be("0110");
 
         [Test]
         public void Part1() => Day08.Checksum(input.readAllText(), 150).Should().Be(1072);
