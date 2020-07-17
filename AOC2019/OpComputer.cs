@@ -59,7 +59,7 @@ namespace AOC2019
             }
 
             public override string ToString() =>
-                string.Format($"{opCode}({parameters.JoinToString()})");
+                string.Format($"{opCode}({string.Join(", ", parameters)})");
         }
 
         public enum Response
@@ -121,11 +121,12 @@ namespace AOC2019
         {
             while (true)
             {
+                // var tmpPos = pos;
                 var op = readOp();
 
-                HelperFunctions.Log("Memory::" + memory.JoinToString());
-                HelperFunctions.Log("Inputs::" + inputQueue.JoinToString());
-                HelperFunctions.Log($"{pos}/{relativeBase}:{op.ToString()}");
+                // HelperFunctions.Log("Memory::" + memory.JoinToString());
+                // HelperFunctions.Log("Inputs::" + inputQueue.JoinToString());
+                // HelperFunctions.Log($"{tmpPos}/{relativeBase}:{op.ToString()}");
 
                 switch (op.opCode)
                 {
@@ -197,7 +198,7 @@ namespace AOC2019
                     {
                         read(operation.parameterModes[0]),
                         read(operation.parameterModes[1]),
-                        read(ParameterMode.Immediate)
+                        readAddress(operation.parameterModes[2])
                     };
                     break;
                 case OpCodes.OpJumpIfTrue:
@@ -217,13 +218,13 @@ namespace AOC2019
                 case OpCodes.OpInput:
                     operation.parameters = new[]
                     {
-                        read(ParameterMode.Immediate)
+                        readAddress(operation.parameterModes[0])
                     };
                     break;
                 case OpCodes.OpAdjustRelativeBase:
                     operation.parameters = new[]
                     {
-                        read(ParameterMode.Immediate)
+                        read(operation.parameterModes[0])
                     };
                     break;
                 case OpCodes.OpHalt:
@@ -238,16 +239,21 @@ namespace AOC2019
         private long safeRead(long ix) => safeRead((int) ix);
         private long safeRead(int ix) => ix < memory.Count ? memory[ix] : 0;
 
-        private long read(ParameterMode mode)
-        {
-            return mode switch
+        private long read(ParameterMode mode) =>
+            mode switch
             {
                 ParameterMode.Position => safeRead(memory[pos++]),
                 ParameterMode.Immediate => safeRead(pos++),
                 ParameterMode.Relative => safeRead(relativeBase + memory[pos++]),
                 _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, null)
             };
-        }
+
+        private long readAddress(ParameterMode mode) =>
+            mode switch
+            {
+                ParameterMode.Relative => read(ParameterMode.Immediate) + relativeBase,
+                _ => read(ParameterMode.Immediate)
+            };
 
         private void write(long value, long address) => write(value, (int) address);
         private void write(long value, int address)
