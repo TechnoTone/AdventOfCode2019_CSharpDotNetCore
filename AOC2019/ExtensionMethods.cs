@@ -35,10 +35,13 @@ namespace AOC2019
         }
 
         public static float Angle(this Point p) =>
-            (float) Math.Atan2(p.X, p.Y) * (float) (180 / Math.PI);
+            (float) (Math.Atan2(p.X, -p.Y) * (float) (180 / Math.PI) + 360) % 360;
 
         public static Point Subtract(this Point p, Point offset) =>
             new Point(p.X - offset.X, p.Y - offset.Y);
+
+        public static Point Add(this Point p, Point offset) =>
+            new Point(p.X + offset.X, p.Y + offset.Y);
 
         public static Point Reduce(this Point p)
         {
@@ -59,6 +62,8 @@ namespace AOC2019
 
             return a == 0 ? b : a;
         }
+
+        public static string ToSimpleString(this Point p) => $"{p.X},{p.Y}";
     }
 
     public static class EnumerableExtensions
@@ -84,6 +89,9 @@ namespace AOC2019
         public static IEnumerable<string> Chunk(this string input, int chunkSize) =>
             Enumerable.Range(0, input.Length / chunkSize)
                 .Select(i => input.Substring(i * chunkSize, chunkSize));
+
+        public static IEnumerable<T> Except<T>(this IEnumerable<T> sequence, T item) =>
+            sequence.Where(el => !el.Equals(item));
 
     }
 }
