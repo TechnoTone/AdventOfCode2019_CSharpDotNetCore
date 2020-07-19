@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Security;
 
@@ -13,7 +14,7 @@ namespace AOC2019
             var intersections =
                 w1.Intersect(w2).ToList();
 
-            return intersections.ConvertAll(p => p.distance).Min();
+            return intersections.ConvertAll(p => p.ManhattanDistance()).Min();
         }
 
         public static int steps(string wire1, string wire2)
@@ -28,23 +29,23 @@ namespace AOC2019
                 .Min();
         }
 
-        private static List<Coordinate> parseWire(string wire1)
+        private static List<Point> parseWire(string wire1)
         {
-            var coordinates = new List<Coordinate>();
-            var coordinate = new Coordinate();
-            
+            var points = new List<Point>();
+            var point = new Point();
+
             foreach (var s in wire1.Split(','))
             {
                 var segment = WireSegment.parse(s);
                 while (segment.distance > 0)
                 {
-                    coordinate.Move(segment.direction);
-                    coordinates.Add(coordinate);
+                    point.Move(segment.direction);
+                    points.Add(point);
                     segment.distance--;
                 }
             }
 
-            return coordinates;
+            return points;
         }
 
     }

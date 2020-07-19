@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace AOC2019
@@ -7,6 +9,56 @@ namespace AOC2019
     {
         public static List<long> ParseCommaSeparatedIntegers(this string input) =>
             input.Split(',').ToList().ConvertAll(long.Parse);
+    }
+
+    public static class PointExtensions
+    {
+        public static int ManhattanDistance(this Point p) => Math.Abs(p.X) + Math.Abs(p.Y);
+
+        public static void Move(this ref Point p, Direction direction)
+        {
+            switch (direction)
+            {
+                case Direction.Up:
+                    p.X--;
+                    break;
+                case Direction.Down:
+                    p.X++;
+                    break;
+                case Direction.Left:
+                    p.Y--;
+                    break;
+                case Direction.Right:
+                    p.Y++;
+                    break;
+            }
+        }
+
+        public static float Angle(this Point p) =>
+            (float) Math.Atan2(p.X, p.Y) * (float) (180 / Math.PI);
+
+        public static Point Subtract(this Point p, Point offset) =>
+            new Point(p.X - offset.X, p.Y - offset.Y);
+
+        public static Point Reduce(this Point p)
+        {
+            var gcd = GCD(p.X, p.Y);
+            return new Point(p.X / gcd, p.Y / gcd);
+        }
+
+        private static int GCD(int a, int b)
+        {
+            if (a == 0 && b == 0) return 1;
+
+            a = Math.Abs(a);
+            b = Math.Abs(b);
+
+            while (a != 0 && b != 0)
+                if (a > b) a %= b;
+                else b %= a;
+
+            return a == 0 ? b : a;
+        }
     }
 
     public static class EnumerableExtensions
