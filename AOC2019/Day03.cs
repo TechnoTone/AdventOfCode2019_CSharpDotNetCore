@@ -52,12 +52,12 @@ namespace AOC2019
 
     internal struct WireSegment
     {
-        public readonly Direction direction;
+        public readonly WireDirection direction;
         public int distance;
 
         private WireSegment(char direction, int distance)
         {
-            this.direction = (Direction) direction;
+            this.direction = (WireDirection) direction;
             this.distance = distance;
         }
         

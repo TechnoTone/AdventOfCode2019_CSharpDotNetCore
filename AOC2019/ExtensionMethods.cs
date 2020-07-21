@@ -15,6 +15,24 @@ namespace AOC2019
     {
         public static int ManhattanDistance(this Point p) => Math.Abs(p.X) + Math.Abs(p.Y);
 
+        public static void Move(this ref Point p, WireDirection direction)
+        {
+            switch (direction)
+            {
+                case WireDirection.Up:
+                    p.X--;
+                    break;
+                case WireDirection.Down:
+                    p.X++;
+                    break;
+                case WireDirection.Left:
+                    p.Y--;
+                    break;
+                case WireDirection.Right:
+                    p.Y++;
+                    break;
+            }
+        }
         public static void Move(this ref Point p, Direction direction)
         {
             switch (direction)
