@@ -5,6 +5,11 @@ using System.Linq;
 
 namespace AOC2019
 {
+
+    public static class LongExtensions
+    {
+        public static bool IsDivisibleBy(this long i, long n) => i % n == 0;
+    }
     public static class StringExtensions
     {
         public static List<long> ParseCommaSeparatedIntegers(this string input) =>
@@ -110,6 +115,20 @@ namespace AOC2019
 
         public static IEnumerable<T> Except<T>(this IEnumerable<T> sequence, T item) =>
             sequence.Where(el => !el.Equals(item));
+    }
 
+    public static class ListExtensions
+    {
+        public static bool SameContentAs(this List<int> sequence, List<int> other)
+        {
+            if (sequence.Count != other.Count) return false;
+            return !sequence.Where((t, i) => t != other[i]).Any();
+        }
+
+        public static bool SameContentAs(this List<long> sequence, List<long> other)
+        {
+            if (sequence.Count != other.Count) return false;
+            return !sequence.Where((t, i) => t != other[i]).Any();
+        }
     }
 }
