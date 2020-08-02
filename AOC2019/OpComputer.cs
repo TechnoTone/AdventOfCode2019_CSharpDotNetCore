@@ -142,7 +142,10 @@ namespace AOC2019
                         if (hasInput)
                             write(inputQueue.Dequeue(), op.parameters[0]);
                         else
+                        {
+                            pos -= 2;
                             return RespondWith.AwaitingInput();
+                        }
                         break;
 
                     case OpCodes.OpOutput:

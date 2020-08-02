@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
 using static AOC2019.OpComputer;
 using static AOC2019.OpComputer.OpCodes;
@@ -101,6 +100,22 @@ namespace AOC2019.Tests
 
             if (!string.IsNullOrEmpty(programMemory))
                 computer.ReadMemory().Should().Be(programMemory);
+        }
+
+        [Test]
+        public void BUG_ComputerShouldRetryReadInputIfNoInputAvailable()
+        {
+            //This didn't cause an issue until Day 13!
+            //Adding this test case for this bug
+
+            var computer = new OpComputer("3,100,99");
+            computer.Run();
+            var result = computer.Run();
+
+            //This is what was failing
+            //The program would resume from the next command instead
+            //of retrying the read input command
+            result.Item1.Should().Be(Response.AwaitingInput);
         }
     }
 }
