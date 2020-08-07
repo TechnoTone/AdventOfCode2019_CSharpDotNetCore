@@ -57,6 +57,35 @@ namespace AOC2019
             }
         }
 
+        public static void Move(this ref Point p, CompassDirection direction)
+        {
+            switch (direction)
+            {
+                case CompassDirection.North:
+                    p.Y++;
+                    break;
+                case CompassDirection.South:
+                    p.Y--;
+                    break;
+                case CompassDirection.West:
+                    p.X--;
+                    break;
+                case CompassDirection.East:
+                    p.X++;
+                    break;
+            }
+        }
+
+        public static Point Shift(this Point p, CompassDirection direction) =>
+            direction switch
+            {
+                CompassDirection.North => p.Add(new Point(0, 1)),
+                CompassDirection.South => p.Add(new Point(0, -1)),
+                CompassDirection.West => p.Add(new Point(-1, 0)),
+                CompassDirection.East => p.Add(new Point(1, 0)),
+                _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
+            };
+
         public static float Angle(this Point p) =>
             (float) (Math.Atan2(p.X, -p.Y) * (float) (180 / Math.PI) + 360) % 360;
 
