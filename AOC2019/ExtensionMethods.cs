@@ -132,6 +132,9 @@ namespace AOC2019
         public static IEnumerable<IEnumerable<T>> Permutations<T>(this IEnumerable<T> sequence) => 
             sequence.Permutations(sequence.Count());
 
+        public static string JoinToStringNoSeparator(this IEnumerable<int> sequence) =>
+            string.Join("", sequence);
+
         public static string JoinToString (this IEnumerable<int> sequence) =>
             string.Join(',', sequence);
 
