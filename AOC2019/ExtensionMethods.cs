@@ -87,6 +87,16 @@ namespace AOC2019
                 _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
             };
 
+        public static Point Shift(this Point p, Direction direction) =>
+            direction switch
+            {
+                Direction.Up => p.Add(new Point(0, -1)),
+                Direction.Down => p.Add(new Point(0, 1)),
+                Direction.Left => p.Add(new Point(-1, 0)),
+                Direction.Right => p.Add(new Point(1, 0)),
+                _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
+            };
+
         public static float Angle(this Point p) =>
             (float) (Math.Atan2(p.X, -p.Y) * (float) (180 / Math.PI) + 360) % 360;
 
@@ -148,6 +158,7 @@ namespace AOC2019
 
         public static IEnumerable<T> Except<T>(this IEnumerable<T> sequence, T item) =>
             sequence.Where(el => !el.Equals(item));
+
     }
 
     public static class ListExtensions
@@ -163,5 +174,20 @@ namespace AOC2019
             if (sequence.Count != other.Count) return false;
             return !sequence.Where((t, i) => t != other[i]).Any();
         }
+
+        public static int SubListIndex<T>(this IList<T> list, int start, IList<T> sublist)
+        {
+            for (var listIndex = start; listIndex < list.Count - sublist.Count + 1; listIndex++)
+            {
+                var count = 0;
+                while (count < sublist.Count && sublist[count].Equals(list[listIndex + count]))
+                    count++;
+                if (count == sublist.Count)
+                    return listIndex;
+            }
+
+            return -1;
+        }
+
     }
 }

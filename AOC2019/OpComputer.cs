@@ -13,6 +13,7 @@ namespace AOC2019
 
         public string ReadMemory() => memory.JoinToString();
         public long ReadMemoryPosition(int pos) => memory[pos];
+        public void WriteMemoryPosition(int pos, long value) => memory[pos] = value;
 
         public enum OpCodes
         {
