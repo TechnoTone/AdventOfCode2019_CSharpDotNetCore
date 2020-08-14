@@ -150,18 +150,15 @@ namespace AOC2019.Tests
         {
             var output = new Day11(input.commaSeparatedIntegers()).Run(1);
             output.Keys.Select(p => p.X).Min().Should().Be(0);
-            output.Keys.Select(p => p.X).Max().Should().Be(5);
+            output.Keys.Select(p => p.X).Max().Should().Be(42);
             output.Keys.Select(p => p.Y).Min().Should().Be(0);
-            output.Keys.Select(p => p.Y).Max().Should().Be(42);
+            output.Keys.Select(p => p.Y).Max().Should().Be(5);
 
-            // This seems wrong - why is x first?
-            // It's to rotate the coordinates and orient the
-            // output onto the 'surface' to make it readable
             var surface = Enumerable.Range(0, 6)
-                .Select(x => string.Join(null,
+                .Select(y => string.Join(null,
                     Enumerable
                         .Range(0, 43)
-                        .Select(y => output.GetValueOrDefault(new Point(x, y)) ? "#" : " ")
+                        .Select(x => output.GetValueOrDefault(new Point(x, y)) ? "#" : " ")
                 ));
 
             var expected = new List<string>

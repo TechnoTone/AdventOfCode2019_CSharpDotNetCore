@@ -38,21 +38,22 @@ namespace AOC2019
                     break;
             }
         }
+
         public static void Move(this ref Point p, Direction direction)
         {
             switch (direction)
             {
                 case Direction.Up:
-                    p.X--;
-                    break;
-                case Direction.Down:
-                    p.X++;
-                    break;
-                case Direction.Left:
                     p.Y--;
                     break;
-                case Direction.Right:
+                case Direction.Down:
                     p.Y++;
+                    break;
+                case Direction.Left:
+                    p.X--;
+                    break;
+                case Direction.Right:
+                    p.X++;
                     break;
             }
         }
