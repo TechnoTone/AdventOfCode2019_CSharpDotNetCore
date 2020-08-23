@@ -118,6 +118,13 @@ namespace AOC2019
             return RunUntilHalt();
         }
 
+        public List<long> RunUntilHalt(List<long> inputs)
+        {
+            Input(inputs);
+            return RunUntilHalt();
+        }
+
+
         public Tuple<Response, long> Run()
         {
             while (true)
