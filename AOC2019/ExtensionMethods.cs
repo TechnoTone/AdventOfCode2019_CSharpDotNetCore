@@ -18,6 +18,14 @@ namespace AOC2019
 
     public static class PointExtensions
     {
+        public static Point[] Surrounding4(this Point p) => new[]
+        {
+            p.Shift(Direction.Up),
+            p.Shift(Direction.Left),
+            p.Shift(Direction.Right),
+            p.Shift(Direction.Down)
+        };
+
         public static int ManhattanDistance(this Point p) => Math.Abs(p.X) + Math.Abs(p.Y);
 
         public static void Move(this ref Point p, WireDirection direction)
@@ -163,6 +171,8 @@ namespace AOC2019
 
     public static class ListExtensions
     {
+        public static List<T> Clone<T>(this List<T> source) => new List<T>(source);
+
         public static bool SameContentAs(this List<int> sequence, List<int> other)
         {
             if (sequence.Count != other.Count) return false;
@@ -189,5 +199,11 @@ namespace AOC2019
             return -1;
         }
 
+    }
+
+    public static class DictionaryExtensions
+    {
+        public static Dictionary<T1, T2> Clone<T1, T2>(this Dictionary<T1, T2> source) =>
+            new Dictionary<T1, T2>(source);
     }
 }
