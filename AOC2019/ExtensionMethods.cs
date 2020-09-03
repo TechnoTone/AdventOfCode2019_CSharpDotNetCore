@@ -9,7 +9,13 @@ namespace AOC2019
     public static class LongExtensions
     {
         public static bool IsDivisibleBy(this long i, long n) => i % n == 0;
+
+        public static void Repeat(this long i, Action a)
+        {
+            for (var n = 0; n < i; n++) a();
+        }
     }
+
     public static class StringExtensions
     {
         public static List<long> ParseCommaSeparatedIntegers(this string input) =>
@@ -167,6 +173,8 @@ namespace AOC2019
         public static IEnumerable<T> Except<T>(this IEnumerable<T> sequence, T item) =>
             sequence.Where(el => !el.Equals(item));
 
+        public static (T, T) Range<T>(this IEnumerable<T> sequence) =>
+            (sequence.Min(), sequence.Max());
     }
 
     public static class ListExtensions

@@ -23,6 +23,8 @@ namespace AOC2019
             Z = z;
         }
 
+        public Vector3 Add(int x, int y, int z) => new Vector3(X + x, Y + y, Z + z);
+
         public override string ToString()
         {
             static string f(int n) => n >= 0 ? $" {n}" : $"{n}";
