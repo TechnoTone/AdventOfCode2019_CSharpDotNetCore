@@ -124,6 +124,25 @@ namespace AOC2019
             return RunUntilHalt();
         }
 
+        public (Response, List<long>) RunUntilHaltOrAwaitingInput()
+        {
+            var outputs = new List<long>();
+            while (true)
+            {
+                switch (Run())
+                {
+                    case (Response.Halt, _):
+                        return (Response.Halt, outputs);
+
+                    case (Response.Output, long value):
+                        outputs.Add(value);
+                        break;
+
+                    case (Response.AwaitingInput, _):
+                        return (Response.AwaitingInput, outputs);
+                }
+            }
+        }
 
         public Tuple<Response, long> Run()
         {

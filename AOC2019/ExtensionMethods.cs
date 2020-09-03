@@ -145,7 +145,7 @@ namespace AOC2019
 
     public static class EnumerableExtensions
     {
-        private static IEnumerable<IEnumerable<T>> Permutations<T>(this IEnumerable<T> list, int length)
+        public static IEnumerable<IEnumerable<T>> Permutations<T>(this IEnumerable<T> list, int length)
         {
             if (length == 1) return list.Select(t => new[] {t});
 
